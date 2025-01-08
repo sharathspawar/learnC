@@ -1,214 +1,188 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-
-// Function to display memory contents in hexadecimal (useful for debugging)
-void display_memory(const char *label, const char *mem, size_t size) {
-    printf("%s:", label);
-    for (size_t i = 0; i < size; i++) {
-        printf(" %02X", (unsigned char)mem[i]);
-    }
-    printf("\n");
-}
+#include <stdlib.h>
 
 int main() {
-    // memset(): Sets a block of memory to a specific value.
-    char buffer[20];
-    memset(buffer, 'A', sizeof(buffer));  // Fill buffer with 'A's
-    printf("Buffer after memset: %.*s\n", (int)sizeof(buffer), buffer);
+    // String manipulation functions demo
+    char str1[50] = "Hello, ";
+    char str2[] = "World!";
+    char str3[] = "This is a C program.";
+    char str4[50];
+    char str5[] = "Find me in the string!";
+    char *token;
+    char str6[50] = "apple,banana,orange";
+    char str7[50] = "apple,banana,orange";
+    char buffer[50];
 
-    // memcpy(): Copies a block of memory from source to destination.  Does not handle overlapping memory correctly.
-    char source[] = "Hello, World!";
-    char dest[20];
-    memcpy(dest, source, strlen(source) + 1); // +1 to copy the null terminator
-    printf("Destination after memcpy: %s\n", dest);
+    // 1. strlen: Get length of a string
+    printf("Length of str2: %lu\n", strlen(str2));
 
-    // memmove(): Copies a block of memory, handling overlapping regions safely.
-    char overlap[] = "OverlapTest";
-    memmove(overlap + 2, overlap, 6);  // Shifts "lapTes" two positions to the right within the array.
-    printf("Overlap array after memmove: %s\n", overlap);
+    // 2. strcpy: Copy one string to another
+    strcpy(str4, str2);
+    printf("After strcpy, str4: %s\n", str4);
 
-    // memchr(): Searches for the first occurrence of a character in a memory block.
-    char *found = memchr(buffer, 'A', sizeof(buffer)); //Looks for 'A' in the buffer.
-    if (found) {
-        printf("Found 'A' at position: %ld\n", found - buffer);  // Pointer arithmetic to find the index
-    } else {
-        printf("'A' not found in buffer.\n");
+    // 3. strncpy: Copy part of a string
+    strncpy(str4, str3, 7);  // Copy first 7 characters
+    str4[7] = '\0';  // Null-terminate
+    printf("After strncpy, str4: %s\n", str4);
+
+    // 4. strcat: Concatenate strings
+    strcat(str1, str2);
+    printf("After strcat, str1: %s\n", str1);
+
+    // 5. strncat: Concatenate up to n characters
+    strncat(str1, str3, 5);  // Only append first 5 characters of str3
+    printf("After strncat, str1: %s\n", str1);
+
+    // 6. strcmp: Compare two strings
+    int cmp_result = strcmp(str2, str3);
+    printf("strcmp result: %d\n", cmp_result);
+
+    // 7. strncmp: Compare up to n characters
+    cmp_result = strncmp(str2, str3, 5);
+    printf("strncmp result (first 5 characters): %d\n", cmp_result);
+
+    // 8. strchr: Find first occurrence of a character
+    char *ch_pos = strchr(str2, 'r');
+    printf("First occurrence of 'r' in str2: %s\n", ch_pos);
+
+    // 9. strrchr: Find last occurrence of a character
+    ch_pos = strrchr(str2, 'r');
+    printf("Last occurrence of 'r' in str2: %s\n", ch_pos);
+
+    // 10. strstr: Find first occurrence of a substring
+    char *sub_str = strstr(str5, "string");
+    printf("First occurrence of 'string' in str5: %s\n", sub_str);
+
+    // 11. strtok: Tokenize a string
+    token = strtok(str6, ",");
+    printf("First token from str6: %s\n", token);
+    while ((token = strtok(NULL, ",")) != NULL) {
+        printf("Next token: %s\n", token);
     }
 
-    // memcmp(): Compares two blocks of memory.
-    char mem1[] = "ABCDEF";
-    char mem2[] = "ABCDEG";
-    int cmp_result = memcmp(mem1, mem2, 6);  // Compare the first 6 bytes
-    printf("memcmp result: %d\n", cmp_result);  // <0 if mem1<mem2, 0 if equal, >0 if mem1>mem2
+    // 12. memset: Set memory with a specific value
+    memset(buffer, '*', 10);  // Set first 10 bytes to '*'
+    buffer[10] = '\0';  // Null-terminate
+    printf("After memset, buffer: %s\n", buffer);
 
+    // 13. memcpy: Copy memory block
+    memcpy(str7, str6, strlen(str6) + 1);  // Include the null-terminator
+    printf("After memcpy, str7: %s\n", str7);
 
-
-    // String Functions (string.h):
-
-    // strcat(): Concatenates (appends) the source string to the end of the destination string.
-    char str1[50] = "Hello";
-    char str2[] = ", World!";
-    strcat(str1, str2);  // Modifies str1; ensure str1 has enough allocated memory.
-    printf("Concatenated string: %s\n", str1);
-
-    // strchr(): Finds the first occurrence of a character in a string.
-    char *chr = strchr(str1, 'W');  // Returns a pointer to 'W' or NULL if not found
-    if (chr) {
-        printf("First 'W' found at position: %ld\n", chr - str1);
-    } else {
-        printf("'W' not found in string.\n");
-    }
-
-    // strcmp(): Compares two strings lexicographically.
-    char cmp_str1[] = "ABC";
-    char cmp_str2[] = "ABD";
-    printf("strcmp result: %d\n", strcmp(cmp_str1, cmp_str2)); // Negative if str1<str2, 0 if equal, positive if str1>str2
-
-
-    // strcoll(): Compares two strings based on the current locale (for internationalization).
-    printf("strcoll result: %d\n", strcoll(cmp_str1, cmp_str2));
-
-    // strcpy(): Copies the source string to the destination string.
-    char copy_dest[50];
-    strcpy(copy_dest, cmp_str1);  // Make sure copy_dest is large enough
-    printf("Copied string: %s\n", copy_dest);
-
-
-    // strcspn(): Returns the length of the initial part of the string that does *not* contain any of the specified characters.
-    char str_cspn[] = "abcdef";
-    printf("strcspn result: %ld\n", strcspn(str_cspn, "cd"));  // Output: 2 (because "ab" doesn't contain 'c' or 'd')
-
-
-    // strerror(): Returns a string describing the error code.
-    printf("Error message for code 2: %s\n", strerror(2));  // "No such file or directory" (typically)
-
-
-    // strlen(): Returns the length of a string.
-    printf("Length of string '%s': %ld\n", str1, strlen(str1));
-
-    // strncat():  Appends a portion of the source string to the destination string, up to a specified number of characters. Safer than `strcat`.
-    char ncat_dest[50] = "Start: ";
-    strncat(ncat_dest, cmp_str1, 2); // Append up to 2 characters from cmp_str1
-    printf("String after strncat: %s\n", ncat_dest); 
-
-    // strncmp(): Compares up to n characters of two strings.
-    printf("strncmp result: %d\n", strncmp(cmp_str1, cmp_str2, 2)); //Like strcmp, but compares only first 2 characters.
-
-    // strncpy(): Copies  a portion of the source string to the destination string, up to a specified number of characters. Might not null-terminate if source length exceeds specified size.
-    char ncpy_dest[50];
-    strncpy(ncpy_dest, cmp_str1, 2);  //Copy first 2 characters.
-    ncpy_dest[2] = '\0'; // Ensure null termination (important!) especially if strlen(cmp_str1) >= 2
-    printf("String after strncpy: %s\n", ncpy_dest); // Output: AB
-
-    // strpbrk():  Finds the first character in the string that matches any character in the specified set of characters.
-    char *pbrk = strpbrk(str1, "aeiou"); // Find the first vowel in the string
-    if (pbrk) {
-        printf("First vowel in string: %c\n", *pbrk);
-    } else {
-        printf("No vowels found in string.\n");
-    }
-
-    // strrchr(): Finds the last occurrence of a character in a string.
-    char *rchr = strrchr(str1, 'o'); //Find the last 'o' in the string.
-    if (rchr) {
-        printf("Last 'o' found at position: %ld\n", rchr - str1);
-    } else {
-        printf("'o' not found in string.\n");
-    }
-
-    // strspn(): Returns the length of the initial portion of a string that consists entirely of characters from a specified set.
-    char str_spn[] = "abcdef";
-    printf("strspn result: %ld\n", strspn(str_spn, "abc"));  // Output: 3 (because "abc" are present at the beginning)
-
-    // strstr(): Finds the first occurrence of a substring within a string.
-    char *substr = strstr(str1, "World"); //Find "World" in str1
-    if (substr) {
-        printf("Substring 'World' found at position: %ld\n", substr - str1);
-    } else {
-        printf("Substring 'World' not found.\n");
-    }
-
-    // strtok():  Breaks a string into a sequence of tokens based on delimiters.
-    char str_tok[] = "token1,token2,token3";
-    char *token = strtok(str_tok, ","); //Get the first token
-    while (token) {
-        printf("Token: %s\n", token);
-        token = strtok(NULL, ",");  // Get subsequent tokens. Pass NULL after the first call.
-    }
-
-    // strxfrm(): Transforms a string based on locale settings (for locale-aware comparisons). Less common.
-    char xfrm_dest[50];
-    strxfrm(xfrm_dest, cmp_str1, sizeof(xfrm_dest));  
-    printf("Transformed string: %s\n", xfrm_dest);
+    // 14. memmove: Safely copy memory block (with overlap)
+    memmove(str7 + 6, str7, 6);  // Move part of the string
+    printf("After memmove, str7: %s\n", str7);
 
     return 0;
 }
 
 
-// This C code demonstrates a variety of functions from the <string.h> library, useful for manipulating strings and memory. Here's a breakdown with explanations:
 
-// Memory Functions:
 
-// memset(void *ptr, int value, size_t num): Sets the first num bytes of the memory block pointed to by ptr to the specified value. Useful for initializing arrays or structures to a particular value.
 
-// memset(buffer, 'A', sizeof(buffer)); // Fills buffer with 'A' characters
-// memcpy(void *dest, const void *src, size_t num): Copies num bytes from the memory block pointed to by src to the memory block pointed to by dest. The source and destination memory blocks should not overlap. Use memmove() if they might overlap.
+// Key Functions in <string.h>:
 
-// memcpy(dest, source, strlen(source) + 1); // Copies the string "Hello, World!" including the null terminator.
-// memmove(void *dest, const void *src, size_t num): Similar to memcpy(), but safely handles overlapping memory regions.
+//     strlen(): Returns the length of a string.
+//     strcpy(): Copies a string to another.
+//     strncpy(): Copies up to n characters of a string.
+//     strcat(): Appends one string to another.
+//     strncat(): Appends up to n characters of a string.
+//     strcmp(): Compares two strings lexicographically.
+//     strncmp(): Compares up to n characters of two strings.
+//     strchr(): Finds the first occurrence of a character in a string.
+//     strrchr(): Finds the last occurrence of a character in a string.
+//     strstr(): Finds the first occurrence of a substring.
+//     strtok(): Tokenizes a string into a series of substrings.
+//     memset(): Sets memory to a specific value.
+//     memcpy(): Copies memory blocks.
+//     memmove(): Moves memory blocks (safely when overlap occurs).
 
-// memmove(overlap + 2, overlap, 6); //  Correctly handles the overlap, resulting in "OvOverlapTe".
-// memchr(const void *ptr, int value, size_t num): Searches for the first occurrence of the byte value within the first num bytes of the memory block pointed to by ptr. Returns a pointer to the located byte or NULL if not found.
 
-// char *found = memchr(buffer, 'A', sizeof(buffer)); // Finds the first 'A' in the buffer.
-// memcmp(const void *ptr1, const void *ptr2, size_t num): Compares the first num bytes of the memory blocks pointed to by ptr1 and ptr2. Returns:
 
-// 0 if the memory blocks are identical.
-// A negative value if ptr1 is less than ptr2.
-// A positive value if ptr1 is greater than ptr2.
-// int cmp_result = memcmp(mem1, mem2, 6); // Compares "ABCDEF" and "ABCDEG".
-// String Functions:
 
-// strcat(char *dest, const char *src): Appends a copy of the string src to the end of the string dest. Ensure dest has enough allocated memory to avoid buffer overflows!
+// Explanation:
 
-// strcat(str1, str2); //  Appends ", World!" to "Hello".
-// strchr(const char *str, int c): Finds the first occurrence of the character c in the string str. Returns a pointer to the first occurrence or NULL if not found.
+//     strlen(): Returns the length of a string (not including the null terminator).
+//     strcpy(): Copies the entire contents of one string to another, including the null terminator.
+//     strncpy(): Copies up to n characters from one string to another, ensuring no overflow occurs.
+//     strcat(): Appends the content of one string to another.
+//     strncat(): Appends up to n characters of one string to another.
+//     strcmp(): Compares two strings lexicographically. Returns a negative, zero, or positive value depending on whether the first string is lexicographically less than, equal to, or greater than the second string.
+//     strncmp(): Compares the first n characters of two strings.
+//     strchr(): Finds the first occurrence of a character in a string. Returns a pointer to the character, or NULL if not found.
+//     strrchr(): Finds the last occurrence of a character in a string.
+//     strstr(): Finds the first occurrence of a substring within a string.
+//     strtok(): Tokenizes a string based on a set of delimiters. Returns each token in turn.
+//     memset(): Sets the first n bytes of a memory block to a specified value.
+//     memcpy(): Copies n bytes from one memory block to another.
+//     memmove(): Similar to memcpy(), but handles memory overlap safely.
 
-// char *chr = strchr(str1, 'W'); // Finds the first 'W' in "Hello, World!".
-// strcmp(const char *str1, const char *str2): Compares two strings lexicographically.
+// Compilation and Execution:
 
-// Returns 0 if the strings are identical.
-// Returns a negative value if str1 comes before str2.
-// Returns a positive value if str1 comes after str2.
-// printf("strcmp result: %d\n", strcmp(cmp_str1, cmp_str2)); //  Compares "ABC" and "ABD".
-// strcoll(const char *str1, const char *str2): Similar to strcmp(), but uses the current locale for comparison, important for internationalization.
+// Save the code as string_demo.c, then compile it:
 
-// strcpy(char *dest, const char *src): Copies the string src (including the null terminator) to the destination dest. Ensure that dest has enough allocated space to prevent buffer overflows.
+// gcc -o string_demo string_demo.c
 
-// strcpy(copy_dest, cmp_str1); // Copies "ABC" to copy_dest.
-// strcspn(const char *str1, const char *str2): Returns the length of the initial segment of str1 that does not contain any of the characters in str2.
+// Run the program:
 
-// strerror(int errnum): Returns a string describing the error code errnum.
+// ./string_demo
 
-// strlen(const char *str): Calculates the length of the string str (excluding the null terminator).
+// Sample Output:
 
-// strncat(char *dest, const char *src, size_t n): Safer version of strcat(). Appends at most n characters from src to dest, and always null-terminates the result. Prevents potential buffer overflows.
+// Length of str2: 6
+// After strcpy, str4: World!
+// After strncpy, str4: This is
+// After strcat, str1: Hello, World!
+// After strncat, str1: Hello, World!This 
+// strcmp result: -1
+// strncmp result (first 5 characters): 0
+// First occurrence of 'r' in str2: rld!
+// Last occurrence of 'r' in str2: rld!
+// First occurrence of 'string' in str5: string!
+// First token from str6: apple
+// Next token: banana
+// Next token: orange
+// After memset, buffer: **********
+// After memcpy, str7: apple,banana,orange
+// After memmove, str7: orange,banana,orange
 
-// strncmp(const char *str1, const char *str2, size_t n): Similar to strcmp(), but compares only the first n characters.
+// Notes:
 
-// strncpy(char *dest, const char *src, size_t n): Copies at most n characters from src to dest. If src is shorter than n, dest is padded with null characters up to length n. Important: If src has length n or greater, strncpy won't null-terminate dest. Always manually null-terminate dest after strncpy.
+//     strtok() modifies the string in place, so it is important to ensure that the string you pass to it is writable.
+//     Memory Safety: Functions like strncpy(), memcpy(), and memmove() are more memory-safe versions of their counterparts (strcpy(), memmove()), but they require you to manage buffer sizes properly.
 
-// strpbrk(const char *str1, const char *str2): Locates the first occurrence in str1 of any character in str2.
 
-// strrchr(const char *str, int c): Like strchr() but finds the last occurrence of c in str.
 
-// strspn(const char *str1, const char *str2): Calculates the length of the initial segment of str1 that consists entirely of characters from str2.
 
-// strstr(const char *haystack, const char *needle): Finds the first occurrence of the substring needle within the string haystack.
 
-// strtok(char *str, const char *delim): Breaks a string into a sequence of tokens based on the delimiters in delim. Important: strtok() modifies the original string.
+// The C code demonstrates a variety of string manipulation functions from the <string.h> library. These functions are essential for working with strings in C.
 
-// strxfrm(char *dest, const char *src, size_t n): Transforms a string based on the current locale, primarily used for locale-aware string comparisons.
+// 1. Includes:
 
-// This explanation provides a comprehensive overview of the <string.h> functions demonstrated in the code, with a focus on correct usage, potential pitfalls, and important considerations like buffer overflows and null termination. Understanding these concepts is crucial for writing safe and reliable C code. Remember to compile with warnings enabled (e.g., gcc -Wall -Wextra ...) to catch potential issues.
+// stdio.h: For standard input/output functions like printf.
+// string.h: Provides the string manipulation functions.
+// stdlib.h: Not directly used in the provided code.
+// 2. String Declarations:
+
+// Several character arrays (str1, str2, etc.) are initialized with various strings. Note that str4 is declared without an initial size; its size will be determined when it's used as the destination of strcpy or strncpy.
+
+// 3. Demonstrated Functions:
+
+// The code demonstrates the following functions with clear examples and output:
+
+// strlen(str): Calculates the length of a string str.
+// strcpy(dest, src): Copies the string src to dest. Make sure dest is large enough!
+// strncpy(dest, src, n): Copies at most n characters from src to dest. Safer than strcpy as it helps prevent buffer overflows, but it might not null-terminate dest if src is longer than n. Always manually null-terminate if this is the case.
+// strcat(dest, src): Appends src to the end of dest. dest needs to have enough space.
+// strncat(dest, src, n): Appends at most n characters from src to the end of dest. Safer than strcat.
+// strcmp(str1, str2): Compares str1 and str2 lexicographically. Returns 0 if they are equal, a negative value if str1 is less than str2, and a positive value if str1 is greater than str2.
+// strncmp(str1, str2, n): Compares the first n characters of str1 and str2.
+// strchr(str, char): Finds the first occurrence of char in str. Returns a pointer to the character or NULL if not found.
+// strrchr(str, char): Finds the last occurrence of char in str.
+// strstr(haystack, needle): Finds the first occurrence of the substring needle in the string haystack.
+// strtok(str, delimiters): Breaks str into a series of tokens based on the delimiters. Subsequent calls with str as NULL continue tokenizing the original string. Important: strtok modifies the original string.
+// memset(ptr, value, num): Sets the first num bytes of the memory block pointed to by ptr to the value value.
+// memcpy(dest, src, num): Copies num bytes from src to dest. Does not handle overlapping memory correctly; use memmove for that.
+// memmove(dest, src, num): Copies num bytes from src to dest, handling overlapping memory regions correctly.
+// This explanation focuses on the practical usage of each string function and emphasizes memory safety considerations where relevant. It also clarifies the purpose of the included headers and omits the unnecessary sample output and compilation instructions, which were present in the original comments. This keeps the explanation concise and focused on the code's functionality.
